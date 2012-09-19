@@ -1,0 +1,47 @@
+// Event handling memory leak pattern 
+// http://www.ibm.com/developerworks/web/library/wa-memleak/
+
+<html>
+<body>
+<script>
+document.write("Program to illustrate memory leak via closure");
+window.onload = function outerFunction(){
+        var obj = document.getElementById("element");
+        obj.onclick = function innerFunction(){
+            alert("hi! I will leak");
+        };
+        obj.bigString = new Array(1000).join(new Array(2000).join("xxxxx"));
+        // This is used to make the leak significant 
+    // one solution  
+    obj = null; // This breaks the circular refernce
+    
+    };
+    
+    
+    // another solution 
+    window.onload = function outerFunction(){
+            var anotherObj = function innerFunction(){
+                alert("Hi ! I have avoided the leak!");
+            }
+            (function anotherInnerFunction(){
+                 var obj = document.getElementById("element");
+                    obj.onclick = ahotherObj;
+                }());
+    // This is used to make the leak significant 
+    };
+    
+    
+    // another solution 
+    window.onload = function(){
+            var obj = document.getElementById("Element");
+            obj.onclick = doesNotLeak;
+        };
+    function doesNotLeak (){
+            // Your logic here 
+            alert("Hi! I have avoided the leak");
+        }
+</script>
+
+
+</body>
+</html>
